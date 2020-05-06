@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Box, Collapse, Divider, Flex, Input, Text } from '@chakra-ui/core';
 
 import { Field } from 'Model';
+import { Id, StateContext } from 'Store';
 
 
 // TODO: handle saving data: add on change callback
@@ -13,11 +14,11 @@ import { Field } from 'Model';
 // TODO: make 'onSave' non-nullable once caller implements it
 
 
-interface FEProps {
+interface PureFieldEditorProps {
     field: Field;
     onSave?: (newField: Field) => void;
 }
-export const FieldEditor: React.FC<FEProps> = ({ field: fieldProp, onSave }) => {
+export const PureFieldEditor: React.FC<PureFieldEditorProps> = ({ field: fieldProp, onSave }) => {
     const [isCollpsed, setCollapsed] = useState(true);
     const toggle = () => setCollapsed(!isCollpsed);
     const [field, setField] = useState(fieldProp);
@@ -48,6 +49,20 @@ export const FieldEditor: React.FC<FEProps> = ({ field: fieldProp, onSave }) => 
                 onNewFieldValue={setField}
             />
         </Box>
+    );
+};
+
+
+interface ConnectedFieldEditorProps {
+    fieldId: Id;
+}
+export const ConnectedFieldEditor: React.FC<ConnectedFieldEditorProps> = ({ fieldId }) => {
+    const stateContext = useContext(StateContext);
+    return (
+        <PureFieldEditor
+            field={stateContext.getField(fieldId)}
+            onSave={() => {throw new Error(`saving not implemented yet`);}}
+        />
     );
 };
 

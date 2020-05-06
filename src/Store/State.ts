@@ -47,11 +47,18 @@ export abstract class State {
     abstract addField(parentId: Id): void;
 
     abstract updateField(field: TreeNode & Field): void;
+    
+    // TODO: remove after initial dev phase when more robust access is implemented
+    abstract lastPageUsedId(): Id;
 
     // TODO: remove after initial dev phase when more robust access is implemented
     abstract lastPageUsed(): Page;
 
     abstract getPage(pageId: Id): Page;
+
+    abstract getField(fieldId: Id): Field;
+
+    abstract getChildrenOf(parentId: Id): Id[];
 
     // TODO: remove when test data not needed anymore
     abstract addSomeTestData(): State;
@@ -126,13 +133,18 @@ class StateImpl extends State {
     updateField(field: TreeNode & Field): void {
         // TODO
     }
-    
-    lastPageUsed(): Page {
+
+    lastPageUsedId(): Id {
         if (this.lastPageId === null) {
             throw new Error(`There is no last page`);
         }
 
-        const lastPage = this.userData.page.get(this.lastPageId)
+        return this.lastPageId;
+    }
+    
+    lastPageUsed(): Page {
+        const lastPage = this.userData.page.get(this.lastPageUsedId())
+
         if (lastPage === undefined) {
             throw new Error(`Last page was not found`);
         }
@@ -146,6 +158,23 @@ class StateImpl extends State {
             throw new Error(`Page with id '${JSON.stringify(pageId)}' was not found`);
         }
         return maybePage;
+    }
+
+    getField(fieldId: Id): Field {
+        const field = this.userData.field.get(fieldId);
+
+        if (field === undefined) {
+            throw new Error(`No field with id '${JSON.stringify(fieldId)}'`);
+        }
+
+        return field;
+    }
+
+    getChildrenOf(parentId: Id): Id[] {
+        // let x: IterableIterator = ;
+        return Array.from(this.userData.field.values())
+            .filter(x => x.parentId === parentId)
+            .map(x => x.id);
     }
     
     // TODO: remove when test data not needed anymore
@@ -167,11 +196,23 @@ class StateImpl extends State {
         const pageId = state.getNextId();
         state.lastPageId = pageId;
 
-        const modifiableState = state.userData.page as unknown as Map<Id, TreeNode & Page>;
-        modifiableState.set(pageId, {
-            ...new Page([field1, field2]),
+        const modifiablePageState = state.userData.page as unknown as Map<Id, TreeNode & Page>;
+        modifiablePageState.set(pageId, {
+            ...new Page("Circus Service", [field1, field2]),
             id: pageId,
             parentId: null,
+        });
+
+        const modifiableFieldState = state.userData.field as unknown as Map<Id, TreeNode & Field>;
+        modifiableFieldState.set(field1.id, {
+            ...field1,
+            id: field1.id,
+            parentId: pageId,
+        });
+        modifiableFieldState.set(field2.id, {
+            ...field2,
+            id: field2.id,
+            parentId: pageId,
         });
 
         return state;
