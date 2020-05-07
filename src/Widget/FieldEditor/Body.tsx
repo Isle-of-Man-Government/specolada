@@ -46,31 +46,14 @@ interface TextDataEditorProps {
     onValueChange: (newValue: string) => void;
 }
 const TextDataEditor: React.FC<TextDataEditorProps> = ({ title, value, onValueChange })  => {
-    const titleVerticalShift = 15;
     const borderRadius = 4;
     return (
-        <Box
-            position="relative"
-            paddingTop={titleVerticalShift}
-            marginY={3}
-        >
-            <Input
-                size="sm"
-                padding="1.0em"
-                width="90%"
-                borderRadius={borderRadius}
-                value={value}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => onValueChange(event.target.value)}
-            />
+        <Box>
             <Text
-                as="div"
-                position="absolute"
-                top={0}
-                left={0}
-                zIndex={14}
-                padding="0 0.5em"
+                as="span"
+                paddingX="0.6em"
                 marginLeft="1.7em"
-                fontSize={1}
+                fontSize="xs"
                 fontWeight="bold"
                 textTransform="uppercase"
                 color="black"
@@ -79,6 +62,13 @@ const TextDataEditor: React.FC<TextDataEditorProps> = ({ title, value, onValueCh
             >
                 {title}
             </Text>
+            <Input
+                size="sm"
+                width="90%"  // because otherwise it spills on the right
+                borderRadius={borderRadius}
+                value={value}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => onValueChange(event.target.value)}
+            />
         </Box>
     );
 };

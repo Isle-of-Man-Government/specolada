@@ -21,7 +21,7 @@ export const Header: React.FC<HeaderProps> = ({ field, showPropsPreview, onHeade
         >
             <Text
                 as="span"
-                fontSize={2}
+                fontSize={14}
                 color="rgba(150, 150, 150, 0.3)"
             >
                 other props will show here
