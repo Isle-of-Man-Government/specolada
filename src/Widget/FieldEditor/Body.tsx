@@ -17,11 +17,6 @@ interface BodyProps {
 }
 export const Body: React.FC<BodyProps> = ({ field, onFieldChange }) =>
     <>
-        <Divider
-            marginTop={1}
-            marginBottom={2}
-            color="rgba(155, 155, 155, 0.4)"
-        />
         <TextDataEditor title="field title" value={field.title}
             onValueChange={(newValue: string) => {
                 onFieldChange({...field, title: newValue});
@@ -48,7 +43,7 @@ interface TextDataEditorProps {
 const TextDataEditor: React.FC<TextDataEditorProps> = ({ title, value, onValueChange })  => {
     const borderRadius = 4;
     return (
-        <Box>
+        <Box margin={1}>
             <Text
                 as="span"
                 paddingX="0.6em"

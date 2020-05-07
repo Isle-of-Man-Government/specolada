@@ -46,7 +46,7 @@ export abstract class State {
 
     abstract addField(parentId: Id): void;
 
-    abstract updateField(field: TreeNode & Field): void;
+    abstract updateField(fieldId: Id, fieldValue: Field): void;
     
     // TODO: remove after initial dev phase when more robust access is implemented
     abstract lastPageUsedId(): Id;
@@ -130,8 +130,22 @@ class StateImpl extends State {
         });
     }
 
-    updateField(field: TreeNode & Field): void {
-        // TODO
+    updateField(fieldId: Id, newValue: Field): void {
+        const currentValue = this.userData.field.get(fieldId);
+        if (currentValue === undefined) {
+            throw new Error(`Can't update field with id '${JSON.stringify(fieldId)}', it doesn't exist`);
+        }
+
+        this.externalStateSetter({
+            ...this,
+            userData: {
+                ...this.userData,
+                field: new Map(this.userData.field).set(fieldId, {
+                    ...currentValue,
+                    ...newValue,
+                })
+            },
+        });
     }
 
     lastPageUsedId(): Id {

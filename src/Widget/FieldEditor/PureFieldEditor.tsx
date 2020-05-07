@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Collapse, Divider, Input, Text } from '@chakra-ui/core';
+import { Box, Collapse, Divider } from '@chakra-ui/core';
 
 import { Field } from 'Model';
 
@@ -19,15 +19,24 @@ interface PureFieldEditorProps {
 export const PureFieldEditor: React.FC<PureFieldEditorProps> = ({ field: fieldProp, onSave }) => {
     const [isExpanded, setExpanded] = useState(false);
     const toggleExpandedState = () => setExpanded(!isExpanded);
+
     const [field, setField] = useState(fieldProp);
+    const updateField = (newFieldValue: Field) => {
+        setField(newFieldValue);
+        setSomeFieldChanged(true);
+    };
+
+    const [hasSomeFieldChanged, setSomeFieldChanged] = useState(false);
+    const saveField = () => {
+        onSave(field);
+        setSomeFieldChanged(false);
+    };
 
     return (
         <Box
             borderRadius={4}
-            paddingLeft={2}
-            paddingRight={2}
-            paddingTop={1}
-            paddingBottom={2}
+            paddingX={2}
+            paddingY={2}
             margin={1}
             backgroundColor="rgba(155, 155, 155, 0.05)"
             border="solid 1px rgba(155, 155, 155, 0.15)"
@@ -35,12 +44,18 @@ export const PureFieldEditor: React.FC<PureFieldEditorProps> = ({ field: fieldPr
             <Header
                 field={field}
                 showPropsPreview={!isExpanded}
+                showSaveControls={hasSomeFieldChanged}
                 onHeaderClick={toggleExpandedState}
+                onSaveClick={saveField}
             />
             <Collapse isOpen={isExpanded}>
+                <Divider
+                    marginX={2}
+                    color="rgba(155, 155, 155, 0.4)"
+                />
                 <Body
                     field={field}
-                    onFieldChange={setField}
+                    onFieldChange={updateField}
                 />
             </Collapse>
         </Box>

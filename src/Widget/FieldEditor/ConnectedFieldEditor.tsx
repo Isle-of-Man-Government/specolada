@@ -14,7 +14,9 @@ export const ConnectedFieldEditor: React.FC<ConnectedFieldEditorProps> = ({ fiel
     return (
         <PureFieldEditor
             field={stateContext.getField(fieldId)}
-            onSave={() => {throw new Error(`saving not implemented yet`);}}
+            onSave={(newFieldValue) => {
+                stateContext.updateField(fieldId, newFieldValue);
+            }}
         />
     );
 };
