@@ -11,21 +11,16 @@ import { Id, StateContext } from 'Store';
 // TODO: handle 'validationRules'
 // TODO: handle null values for 'hintText': on/off switch maybe?
 // TODO: move styles to CSS file
-// TODO: make 'onSave' non-nullable once caller implements it
 
 
 interface PureFieldEditorProps {
     field: Field;
-    onSave?: (newField: Field) => void;
+    onSave: (newField: Field) => void;
 }
 export const PureFieldEditor: React.FC<PureFieldEditorProps> = ({ field: fieldProp, onSave }) => {
-    const [isCollpsed, setCollapsed] = useState(true);
-    const toggle = () => setCollapsed(!isCollpsed);
+    const [isExpanded, setExpanded] = useState(false);
+    const toggleExpandedState = () => setExpanded(!isExpanded);
     const [field, setField] = useState(fieldProp);
-
-    if (onSave === null) {
-        console.warn(`in FieldEditor: the 'onSave' callback is not set`);
-    }
 
     return (
         <Box
@@ -40,14 +35,15 @@ export const PureFieldEditor: React.FC<PureFieldEditorProps> = ({ field: fieldPr
         >
             <Header
                 field={field}
-                showOnlyTitle={isCollpsed}
-                onHeaderClick={toggle}
+                showPropsPreview={!isExpanded}
+                onHeaderClick={toggleExpandedState}
             />
-            <Body
-                field={field}
-                show={!isCollpsed}
-                onNewFieldValue={setField}
-            />
+            <Collapse isOpen={isExpanded}>
+                <Body
+                    field={field}
+                    onFieldChange={setField}
+                />
+            </Collapse>
         </Box>
     );
 };
@@ -69,16 +65,16 @@ export const ConnectedFieldEditor: React.FC<ConnectedFieldEditorProps> = ({ fiel
 
 interface HeaderProps {
     field: Field;
-    showOnlyTitle: boolean;
+    showPropsPreview: boolean;
     onHeaderClick: () => void;
 }
-const Header: React.FC<HeaderProps> = ({ field, showOnlyTitle, onHeaderClick }) => 
+const Header: React.FC<HeaderProps> = ({ field, showPropsPreview, onHeaderClick }) => 
     <Flex onClick={onHeaderClick}>
         <Text as="span">
             {field?.title}
             &nbsp; {/* prevents collapsing */}
         </Text>
-        <Collapse isOpen={showOnlyTitle}
+        <Collapse isOpen={showPropsPreview}
             marginLeft={4}
         >
             <Text
@@ -94,40 +90,39 @@ const Header: React.FC<HeaderProps> = ({ field, showOnlyTitle, onHeaderClick }) 
 
 interface BodyProps {
     field: Field;
-    show: boolean;
-    onNewFieldValue: (newField: Field) => void;
+    onFieldChange: (newField: Field) => void;
 }
-const Body: React.FC<BodyProps> = ({ field, show, onNewFieldValue }) =>
-    <Collapse isOpen={show}>
+const Body: React.FC<BodyProps> = ({ field, onFieldChange }) =>
+    <>
         <Divider
             marginTop={1}
             marginBottom={2}
             color="rgba(155, 155, 155, 0.4)"
         />
         <TextDataEditor title="field title" value={field.title}
-            onChange={(newValue: string) => {
-                onNewFieldValue({...field, title: newValue});
+            onValueChange={(newValue: string) => {
+                onFieldChange({...field, title: newValue});
             }}
         />
         <TextDataEditor title="field type" value={JSON.stringify(field.type)}
-            onChange={(newValue: string) => {
-                onNewFieldValue({...field, type: JSON.parse(newValue)});
+            onValueChange={(newValue: string) => {
+                onFieldChange({...field, type: JSON.parse(newValue)});
             }}
         />
         <TextDataEditor title="hint text" value={field.hintText ?? ""}
-            onChange={(newValue: string) => {
-                onNewFieldValue({...field, hintText: newValue});
+            onValueChange={(newValue: string) => {
+                onFieldChange({...field, hintText: newValue});
             }}
         />
-    </Collapse>;
+    </>;
 
 
 interface TextDataEditorProps {
     title: string;
     value: string;
-    onChange: (newValue: string) => void;
+    onValueChange: (newValue: string) => void;
 }
-const TextDataEditor: React.FC<TextDataEditorProps> = ({ title, value, onChange })  => {
+const TextDataEditor: React.FC<TextDataEditorProps> = ({ title, value, onValueChange })  => {
     const titleVerticalShift = 15;
     const borderRadius = 4;
     return (
@@ -142,7 +137,7 @@ const TextDataEditor: React.FC<TextDataEditorProps> = ({ title, value, onChange 
                 width="90%"
                 borderRadius={borderRadius}
                 value={value}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => onChange(event.target.value)}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => onValueChange(event.target.value)}
             />
             <Text
                 as="div"

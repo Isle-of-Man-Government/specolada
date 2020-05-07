@@ -3,8 +3,8 @@ import { Text } from '@chakra-ui/core';
 
 import { StateContext, Id } from 'Store';
 import { Page as PageModel } from 'Model';
+import { FieldEditor } from 'Widget';
 
-import { ConnectedFieldEditor } from './FieldEditor';
 import './page.css';
 
 
@@ -35,7 +35,7 @@ export const ConnectedPage: React.FC<ConnectedPageProps> = ({ pageId }) => {
         <PurePage page={stateContext.getPage(pageId)}>
             {stateContext.getChildrenOf(pageId)
                 .map(fieldId => {  // TODO: it can be either a field of field group
-                    return { key: fieldId, child: <ConnectedFieldEditor fieldId={fieldId} /> };
+                    return { key: fieldId, child: <FieldEditor fieldId={fieldId} /> };
                 })
             }
         </PurePage>
