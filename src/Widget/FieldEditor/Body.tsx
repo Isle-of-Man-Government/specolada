@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Divider, Input, Text } from '@chakra-ui/core';
+import { Box, Input, Text } from '@chakra-ui/core';
 
 import { Field } from 'Model';
 

@@ -48,14 +48,7 @@ export class StoreImpl extends Store {
     }
 
     getField(fieldId: string): Field {
-        
-        // TODO: remove
-        const LOG = (text: string, obj: any) => console.log(
-            `~${module.id.replace("./src/", "")}~ || ${text} ::>  ${JSON.stringify(obj, null, 2)}`);
-
-        const x = this.state.getField(fieldId);
-        LOG(`get Field | field value`, x);
-        return x;
+        return this.state.getField(fieldId);
     }
 
     getChildrenIdsOf(parentId: string): string[] {

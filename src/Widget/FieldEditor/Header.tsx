@@ -17,7 +17,7 @@ export const Header: React.FC<HeaderProps> =
         <Flex onClick={onHeaderClick} margin={1}>
             <Text as="span">
                 {field?.title}
-            &nbsp; {/* prevents collapsing */}
+            &nbsp; {/* effectively, this serves as 'min height' */}
             </Text>
             <Collapse isOpen={showPropsPreview}
                 marginLeft={4}
