@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from '@chakra-ui/core';
+import { Text, Button } from '@chakra-ui/core';
 
 import { Id, useSpecoladaStore } from 'Store';
 import { Page as PageModel } from 'Model';
@@ -10,9 +10,10 @@ import './page.css';
 
 interface PurePageProps {
     page: PageModel;
+    onAddFieldClick: () => void;
     children: ({key: string, child: React.ReactNode})[];  // TODO: child can be either Field or FieldGroup
 }
-export const PurePage: React.FC<PurePageProps> = ({ page, children }) =>
+export const PurePage: React.FC<PurePageProps> = ({ page, onAddFieldClick, children }) =>
     <article className={"page"}>
         <Text as="h1" textAlign="center" marginTop={0}>
             {page.title}
@@ -22,6 +23,9 @@ export const PurePage: React.FC<PurePageProps> = ({ page, children }) =>
                 {child}
             </React.Fragment>
         )}
+        <Button onClick={onAddFieldClick}>
+            + Add Field
+        </Button>
     </article>;
 
 
@@ -32,7 +36,10 @@ export const ConnectedPage: React.FC<ConnectedPageProps> = ({ pageId }) => {
     const store = useSpecoladaStore();
 
     return (
-        <PurePage page={store.getPage(pageId)}>
+        <PurePage
+            page={store.getPage(pageId)}
+            onAddFieldClick={() => store.addFieldTo(pageId)}
+        >
             {store.getChildrenIdsOf(pageId)
                 .map(fieldId => {  // TODO: it can be either a field of field group
                     return { key: fieldId, child: <FieldEditor fieldId={fieldId} /> };
