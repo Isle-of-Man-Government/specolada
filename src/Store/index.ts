@@ -1,7 +1,16 @@
-import StateContext from './Context';
+import { enableMapSet } from 'immer';
+
 import { State } from './State';
+import { Store } from './Store';
+import { useSpecoladaStore, SpecoladaStoreProvider } from './Context';
+import { upgradeModelsForImmer } from './helpers';
+
+
+upgradeModelsForImmer();
+enableMapSet();
+
 
 export type TreeNode = import('./TreeNode').TreeNode;
 export type Id = import('./TreeNode').Id;
 
-export { State, StateContext };
+export { Store, State, SpecoladaStoreProvider, useSpecoladaStore };

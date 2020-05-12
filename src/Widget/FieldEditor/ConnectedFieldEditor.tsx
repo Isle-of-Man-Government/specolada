@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
-import { Id, StateContext } from 'Store';
+import { Id, useSpecoladaStore } from 'Store';
 
 import { PureFieldEditor } from './PureFieldEditor';
 
@@ -10,12 +10,12 @@ interface ConnectedFieldEditorProps {
 }
 
 export const ConnectedFieldEditor: React.FC<ConnectedFieldEditorProps> = ({ fieldId }) => {
-    const stateContext = useContext(StateContext);
+    const store = useSpecoladaStore();
     return (
         <PureFieldEditor
-            field={stateContext.getField(fieldId)}
+            field={store.getField(fieldId)}
             onSave={(newFieldValue) => {
-                stateContext.updateField(fieldId, newFieldValue);
+                store.updateField(fieldId, newFieldValue);
             }}
         />
     );

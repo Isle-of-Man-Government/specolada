@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Text } from '@chakra-ui/core';
 
-import { StateContext, Id } from 'Store';
+import { Id, useSpecoladaStore } from 'Store';
 import { Page as PageModel } from 'Model';
 import { FieldEditor } from 'Widget';
 
@@ -29,11 +29,11 @@ interface ConnectedPageProps {
     pageId: Id;
 }
 export const ConnectedPage: React.FC<ConnectedPageProps> = ({ pageId }) => {
-    const stateContext = useContext(StateContext);
+    const store = useSpecoladaStore();
 
     return (
-        <PurePage page={stateContext.getPage(pageId)}>
-            {stateContext.getChildrenOf(pageId)
+        <PurePage page={store.getPage(pageId)}>
+            {store.getChildrenIdsOf(pageId)
                 .map(fieldId => {  // TODO: it can be either a field of field group
                     return { key: fieldId, child: <FieldEditor fieldId={fieldId} /> };
                 })
@@ -44,6 +44,6 @@ export const ConnectedPage: React.FC<ConnectedPageProps> = ({ pageId }) => {
 
 
 export const DefaultTestPage: React.FC<{}> = () => {
-    const stateContext = useContext(StateContext);
-    return <ConnectedPage pageId={stateContext.lastPageUsedId()} />;
+    const store = useSpecoladaStore();
+    return <ConnectedPage pageId={store.lastPageUsedId()} />;
 };
