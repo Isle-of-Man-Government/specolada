@@ -11,7 +11,7 @@ SpecoladaContext.displayName = "Specolada context";
 export const SpecoladaStoreProvider: React.FC<{}> = ({ children }) => {
     const initialStateCreator: () => State = createState;
 
-    const [state, setState]: [State, (s: State) => void] = useState(initialStateCreator);
+    const [state, setState] = useState(initialStateCreator);
     const store: Store = createStore(state, setState);
 
     return (
