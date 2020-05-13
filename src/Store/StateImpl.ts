@@ -14,10 +14,6 @@ export class StateImpl extends State {
     // TODO: remove when 'lastPageUsed' method not needed anymore
     private lastPageId: string | null = null;
 
-    constructor() {
-        super();
-    }
-    
     getNextId(): Id {
         return String(this.nextId++);
     }
