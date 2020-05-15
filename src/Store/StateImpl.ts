@@ -1,4 +1,4 @@
-import { Field, Page } from 'Model';
+import { Field, Page, ValidationRule } from 'Model';
 
 import { State } from './State';
 import { Id } from './TreeNode';
@@ -88,6 +88,41 @@ export class StateImpl extends State {
         return Array.from(this.userData.field.values())
             .filter(x => x.parentId === parentId)
             .map(x => x.id);
+    }
+
+    addValidationRule(parentId: Id, rule: ValidationRule): void {
+        const id = this.getNextId();
+
+        this.userData.validationRule.set(id, { ...rule, id, parentId });
+    }
+
+    getValidationRule(ruleId: Id): ValidationRule {
+        const rule = this.userData.validationRule.get(ruleId);
+        if (rule === undefined) {
+            throw new Error(`No rule with id '${JSON.stringify(ruleId)}'`);
+        }
+
+        return rule;
+    }
+
+    updateValidationRule(ruleId: Id, newValue: ValidationRule): void {
+        const currentValue = this.userData.validationRule.get(ruleId);
+        if (currentValue === undefined) {
+            throw new Error(`Can't update rule with id '${JSON.stringify(ruleId)}', it doesn't exist`);
+        }
+
+        if (currentValue.kind !== newValue.kind) {
+            throw new Error(`The new value of the validation rule is of a different kind`);
+            // but should we care about that?
+            // I guess not so:
+            // TODO: remove this check once it's confirmed it's not needed
+        }
+
+        this.userData.validationRule.set(ruleId, {
+            ...newValue,
+            id: currentValue.id,
+            parentId: currentValue.id,
+        });
     }
     
     // TODO: remove when test data not needed anymore

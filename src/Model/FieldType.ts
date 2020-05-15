@@ -40,7 +40,7 @@ export abstract class FreeTextFieldValidationRule extends ValidationRule {
 export class MinCharacters extends FreeTextFieldValidationRule {
     kind: FreeTextFieldValidationRule_kind = "minCharacters";
     min: number = 0;
-    }
+}
 
 export class MaxCharacters extends FreeTextFieldValidationRule {
     kind: FreeTextFieldValidationRule_kind = "maxCharacters";

@@ -1,7 +1,7 @@
-import { obsolete_FieldType } from './FieldType';
 
 export * from './Field';
 export * from './FieldGroup';
 export * from './Page';
 
-export type FieldType = obsolete_FieldType;
+export type { obsolete_FieldType as FieldType } from './FieldType';
+export { ValidationRule } from './FieldType';

@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 
-import { Page, Field } from 'Model';
+import { Page, Field, ValidationRule } from 'Model';
 
 import { Store } from './Store';
 import { State } from './State';
@@ -54,5 +54,17 @@ export class StoreImpl extends Store {
 
     getChildrenIdsOf(parentId: Id): string[] {
         return this.state.getChildrenOf(parentId);
+    }
+
+    addValidationRuleTo(parentId: Id, rule: ValidationRule): void {
+        this.produceNewState(s => s.addValidationRule(parentId, rule));
+    }
+
+    getValidationRule(ruleId: Id): Readonly<ValidationRule> {
+        return this.state.getValidationRule(ruleId);
+    }
+
+    updateValidationRule(ruleId: Id, rule: ValidationRule): void {
+        this.produceNewState(s => s.updateValidationRule(ruleId, rule));
     }
 }

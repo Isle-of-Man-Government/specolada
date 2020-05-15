@@ -1,6 +1,7 @@
 import { Page, Field } from 'Model';
 
 import { Id, TreeNode } from './TreeNode';
+import { ValidationRule } from 'Model';
 
 
 export abstract class State {
@@ -13,12 +14,16 @@ export abstract class State {
         
         /** All fields the user has */
         field: Map<Id, Readonly<TreeNode & Field>>,
+        
+        /** All validation rules the user has */
+        validationRule: Map<Id, Readonly<TreeNode & ValidationRule>>,
     };
 
     constructor() {
         this.userData = {
             page: new Map(),
             field: new Map(),
+            validationRule: new Map(),
         };
     }
 
@@ -37,4 +42,10 @@ export abstract class State {
     abstract getField(fieldId: Id): Field;
 
     abstract getChildrenOf(parentId: Id): Id[];
+
+    abstract addValidationRule(parentId: Id, rule: ValidationRule): void;
+
+    abstract getValidationRule(ruleId: Id): ValidationRule;
+
+    abstract updateValidationRule(ruleId: Id, rule: ValidationRule): void;
 }

@@ -1,4 +1,4 @@
-import { Field, Page } from 'Model';
+import { Field, Page, ValidationRule } from 'Model';
 
 import { Id } from './TreeNode';
 
@@ -24,4 +24,10 @@ export abstract class Store {
     abstract getField(fieldId: Id): Readonly<Field>;
 
     abstract getChildrenIdsOf(parentId: Id): Id[];
+
+    abstract addValidationRuleTo(parentId: Id, rule: ValidationRule): void;
+
+    abstract getValidationRule(ruleId: Id): Readonly<ValidationRule>;
+
+    abstract updateValidationRule(ruleId: Id, rule: ValidationRule): void;
 }
