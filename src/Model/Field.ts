@@ -1,4 +1,4 @@
-import { FieldType } from "./FieldType";
+import { FieldType } from 'Model';
 
 
 export class Field {
