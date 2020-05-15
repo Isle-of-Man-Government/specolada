@@ -4,6 +4,7 @@ import { Page, Field } from 'Model';
 
 import { Store } from './Store';
 import { State } from './State';
+import { Id } from './TreeNode';
 
 /**
  * Ensures immutability of the state.
@@ -27,15 +28,15 @@ export class StoreImpl extends Store {
         this.setState(newState);
     }
 
-    addFieldTo(parentId: string): void {
+    addFieldTo(parentId: Id): void {
         this.produceNewState(s => s.addField(parentId));
     }
 
-    updateField(fieldId: string, fieldValue: Field): void {
+    updateField(fieldId: Id, fieldValue: Field): void {
         this.produceNewState(s => s.updateField(fieldId, fieldValue));
     }
 
-    lastPageUsedId(): string {
+    lastPageUsedId(): Id {
         return this.state.lastPageUsedId();
     }
 
@@ -43,15 +44,15 @@ export class StoreImpl extends Store {
         throw new Error("Method not implemented.");
     }
 
-    getPage(pageId: string): Page {
+    getPage(pageId: Id): Page {
         return this.state.getPage(pageId);
     }
 
-    getField(fieldId: string): Field {
+    getField(fieldId: Id): Field {
         return this.state.getField(fieldId);
     }
 
-    getChildrenIdsOf(parentId: string): string[] {
+    getChildrenIdsOf(parentId: Id): string[] {
         return this.state.getChildrenOf(parentId);
     }
 }
