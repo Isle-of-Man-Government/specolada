@@ -4,9 +4,6 @@ import { State } from './State';
 import { Id } from './TreeNode';
 
 
-type FT = import('Model').FieldType;  // TODO: remove
-
-
 export class StateImpl extends State {
     
     private nextId: number = 1;
@@ -20,10 +17,8 @@ export class StateImpl extends State {
 
     addField(parentId: Id): void {
         const newId = this.getNextId();
-        // TODO: should not need to set any values beside IDs; it means constructors should need less params
-        const ft: FT = { kind: "text", multiLine: true, maxCharacters: 55 };
         const newField = {
-            ...new Field(false, ft, "<tite>", null, "ANY"),
+            ...new Field(),
             id: newId,
             parentId,
         };
@@ -127,17 +122,15 @@ export class StateImpl extends State {
     
     // TODO: remove when test data not needed anymore
     addSomeTestData(): void {
-        const ft1: FT = { kind: "text", multiLine: true, maxCharacters: 55 };
-        const ft2: FT = { kind: "number", minValue: 0, maxValue: null };
         const field1 = {
             id: "-14",
             parentId: null, 
-            ...new Field(true, ft1, "home", "describe your home")
+            ...new Field("home", "describe your home")
         };
         const field2 = {
             id: "-15",
             parentId: null,
-            ...new Field(false, ft2, "age")
+            ...new Field("age")
         };
         
         const state = this;

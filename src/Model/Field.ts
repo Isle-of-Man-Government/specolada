@@ -1,4 +1,4 @@
-import { FieldType } from 'Model';
+import { FieldType, FreeTextFieldType } from './FieldType';
 
 
 export class Field {
@@ -11,10 +11,10 @@ export class Field {
     // TODO: validation should probably be part of type because allowed validations depend on FieldType
 
     constructor(
-        required: boolean,
-        type: FieldType,
-        title: string,
-        hintText: string | null = null,
+        title: string = "",
+        hintText: string = "",
+        required: boolean = true,
+        type: FieldType = new FreeTextFieldType(),
         validationRules = "ANY",
     ) {
         this.required = required;
