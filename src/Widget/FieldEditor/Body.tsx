@@ -15,24 +15,32 @@ interface BodyProps {
     field: Field;
     onFieldChange: (newField: Field) => void;
 }
-export const Body: React.FC<BodyProps> = ({ field, onFieldChange }) =>
-    <>
-        <TextDataEditor title="field title" value={field.title}
-            onValueChange={(newValue: string) => {
-                onFieldChange({...field, title: newValue});
-            }}
+export const Body: React.FC<BodyProps> = ({ field, onFieldChange }) => {
+    // helper, to make the rest of the code shorter and more readable
+    const partialFieldUpdate = (fieldPart: Partial<Field>) => onFieldChange({...field, ...fieldPart});
+
+    return (<>
+        <TextDataEditor
+            title="field title"
+            value={field.title}
+            onValueChange={newValue => partialFieldUpdate({ title: newValue })}
         />
-        <TextDataEditor title="field type" value={JSON.stringify(field.type)}
-            onValueChange={(newValue: string) => {
-                onFieldChange({...field, type: JSON.parse(newValue)});
-            }}
+        <TextDataEditor
+            title="field type"
+            value={JSON.stringify(field.type)}
+            onValueChange={newValue => partialFieldUpdate({ type: JSON.parse(newValue) })}
+        <TextDataEditor
+            title="hint text"
+            value={field.hintText ?? ""}
+            onValueChange={newValue => partialFieldUpdate({ hintText: newValue })}
         />
-        <TextDataEditor title="hint text" value={field.hintText ?? ""}
-            onValueChange={(newValue: string) => {
-                onFieldChange({...field, hintText: newValue});
-            }}
-        />
-    </>;
+    </>);
+}
+
+
+const commonProps = {
+    borderRadius: 4,
+};
 
 
 interface TextDataEditorProps {
@@ -41,7 +49,6 @@ interface TextDataEditorProps {
     onValueChange: (newValue: string) => void;
 }
 const TextDataEditor: React.FC<TextDataEditorProps> = ({ title, value, onValueChange })  => {
-    const borderRadius = 4;
     return (
         <Box margin={1}>
             <Text
@@ -53,14 +60,13 @@ const TextDataEditor: React.FC<TextDataEditorProps> = ({ title, value, onValueCh
                 textTransform="uppercase"
                 color="black"
                 backgroundColor="white"
-                borderRadius={borderRadius}
+                borderRadius={commonProps.borderRadius}
             >
                 {title}
             </Text>
             <Input
                 size="sm"
-                width="90%"  // because otherwise it spills on the right
-                borderRadius={borderRadius}
+                borderRadius={commonProps.borderRadius}
                 value={value}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => onValueChange(event.target.value)}
             />
