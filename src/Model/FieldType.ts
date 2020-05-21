@@ -50,3 +50,8 @@ export type NumberFieldValidationRule_kind = "minValue" | "maxValue";
 export abstract class NumberFieldValidationRule extends ValidationRule {
     abstract kind: NumberFieldValidationRule_kind;
 }
+
+export class NumberFieldType extends FieldType {
+    kind: FieldType_kind = "number";
+    validationRules: NumberFieldValidationRule[] = [];
+}
