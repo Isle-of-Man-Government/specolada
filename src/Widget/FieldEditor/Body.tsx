@@ -34,16 +34,32 @@ export const Body: React.FC<BodyProps> = ({ field, onFieldChange }) => {
             title="hint text"
             value={field.hintText ?? ""}
             onValueChange={newValue => partialFieldUpdate({ hintText: newValue })}
-        />
+            />
     </>);
 }
 
-
+    
 const commonProps = {
     radius: 4,
     width: "90%",  // because otherwise it spills on the right
     size: "sm" as ("sm" | "lg" | "md"),
 };
+
+
+const Label: React.FC<{ title: string }> = ({ title }) =>
+    <Text
+        as="span"
+        paddingX="0.6em"
+        marginLeft="1.7em"
+        fontSize="xs"
+        fontWeight="bold"
+        textTransform="uppercase"
+        color="black"
+        backgroundColor="white"
+        borderRadius={commonProps.radius}
+    >
+        {title}
+    </Text>;
 
 
 interface TextDataEditorProps {
@@ -53,20 +69,8 @@ interface TextDataEditorProps {
 }
 const TextDataEditor: React.FC<TextDataEditorProps> = ({ title, value, onValueChange })  => {
     return (
-        <Box margin={1}>
-            <Text
-                as="span"
-                paddingX="0.6em"
-                marginLeft="1.7em"
-                fontSize="xs"
-                fontWeight="bold"
-                textTransform="uppercase"
-                color="black"
-                backgroundColor="white"
-                borderRadius={commonProps.radius}
-            >
-                {title}
-            </Text>
+        <>
+            <Label title={title} />
             <Input
                 size={commonProps.size}
                 width={commonProps.width}
@@ -74,7 +78,7 @@ const TextDataEditor: React.FC<TextDataEditorProps> = ({ title, value, onValueCh
                 value={value}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => onValueChange(event.target.value)}
             />
-        </Box>
+        </>
     );
 };
 
@@ -114,19 +118,7 @@ const TypeDataEditor: React.FC<TypeDataEditorProps> = ({ title, value, onValueCh
     };
 
     return (<>
-        <Text
-            as="span"
-            paddingX="0.6em"
-            marginLeft="1.7em"
-            fontSize="xs"
-            fontWeight="bold"
-            textTransform="uppercase"
-            color="black"
-            backgroundColor="white"
-            borderRadius={commonProps.radius}
-        >
-            {title}
-        </Text>
+        <Label title={title} />
         <Select
             color="black"
             variant="outline"
@@ -141,7 +133,9 @@ const TypeDataEditor: React.FC<TypeDataEditorProps> = ({ title, value, onValueCh
                 selectValue(e.target.value)
             }}
         >
-            {options.map(x => <option key={x.value} value={x.value}>{x.description}</option>)}
+            {options.map(x =>
+                <option key={x.value} value={x.value}> {x.description} </option>
+            )}
         </Select>
     </>);
 };
