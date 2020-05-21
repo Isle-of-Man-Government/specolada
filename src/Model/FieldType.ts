@@ -3,55 +3,129 @@
 // for discriminated unions
 export type FieldType_kind = "free text" | "number";
 
-// collection of all validation rules' kinds
-export type ValidationRule_kind = FreeTextFieldValidationRule_kind | NumberFieldValidationRule_kind;
+
+class RuleParam {
+
+    /** Text presented to user */
+    title: string;
+
+    /** Internal name, should never change */
+    name: string | null;
+
+    valType: "number" | "string";  // maybe enum in the future as well
+
+    value: number | string | null;
+
+    constructor(
+        title: string,
+        valType: typeof RuleParam.prototype.valType,
+        name: string | null = null,
+    ) {
+        this.title = title;
+        this.name = name;
+        this.valType = valType;
+        this.value = null;
+    }
+}
 
 export abstract class ValidationRule {
-    abstract kind: ValidationRule_kind;
+
+    /** Internal name, should never change */
+    name: string;
+
+    /** Text presented to user */
+    title: string;
+
+    /** Longer text for user */
+    description: string;
+
+    params: RuleParam[] = [];
+
+    constructor(
+        name: string,
+        title: string,
+        description: string,
+        ...params: RuleParam[]
+    ) {
+        this.name = name;
+        this.title = title;
+        this.description = description;
+        this.params = params;
+    }
 }
+
+
+abstract class ValidationRuleCreator {
+    abstract ruleTitle: string;
+    abstract create: () => ValidationRule;
+}
+
 
 export abstract class FieldType {
     abstract kind: FieldType_kind;
     abstract validationRules: ValidationRule[];
+    abstract allowedRules: ValidationRuleCreator[];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 
-export type FreeTextFieldValidationRule_kind =
-    | "minCharacters"
-    | "maxCharacters"
-    ;
+export class MinChars extends ValidationRule {
+    private static readonly title = "minimum required";
 
-export abstract class FreeTextFieldValidationRule extends ValidationRule {
-    abstract kind: FreeTextFieldValidationRule_kind;
+    private constructor() {
+        super(
+            "MinChars",
+            MinChars.title,
+            "The minimum number of characters required",
+            new RuleParam("min", "number"),
+        );
+    }
+    
+    static creator: ValidationRuleCreator = {
+        ruleTitle: MinChars.title,
+        create: () => new MinChars(),
+    };
 }
 
-export class MinCharacters extends FreeTextFieldValidationRule {
-    kind: FreeTextFieldValidationRule_kind = "minCharacters";
-    min: number = 0;
+
+export class MaxChars extends ValidationRule {
+    private static readonly title = "maximum allowed";
+
+    private constructor() {
+        super(
+            "MaxChars",
+            MaxChars.title,
+            "The maximum number of characters allowed",
+            new RuleParam("max", "number"),
+        );
+    }
+    
+    static creator: ValidationRuleCreator = {
+        ruleTitle: MaxChars.title,
+        create: () => new MaxChars(),
+    };
 }
 
-export class MaxCharacters extends FreeTextFieldValidationRule {
-    kind: FreeTextFieldValidationRule_kind = "maxCharacters";
-    max: number = 0;
-}
 
 export class FreeTextFieldType extends FieldType {
     kind: FieldType_kind = "free text";
-    validationRules: FreeTextFieldValidationRule[] = [];
+    validationRules: ValidationRule[] = [];
+    allowedRules = [
+        MinChars.creator,
+        MaxChars.creator,
+    ];
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-
-export type NumberFieldValidationRule_kind = "minValue" | "maxValue";
-
-export abstract class NumberFieldValidationRule extends ValidationRule {
-    abstract kind: NumberFieldValidationRule_kind;
-}
+// TODO: validation rules for Number Field Type
 
 export class NumberFieldType extends FieldType {
     kind: FieldType_kind = "number";
-    validationRules: NumberFieldValidationRule[] = [];
+    validationRules: ValidationRule[] = [];
+    allowedRules = [
+        // TODO
+    ];
 }

@@ -106,8 +106,8 @@ export class StateImpl extends State {
             throw new Error(`Can't update rule with id '${JSON.stringify(ruleId)}', it doesn't exist`);
         }
 
-        if (currentValue.kind !== newValue.kind) {
-            throw new Error(`The new value of the validation rule is of a different kind`);
+        if (currentValue.name !== newValue.name) {
+            throw new Error(`The new value for the validation rule is of a different kind`);
             // but should we care about that?
             // I guess not so:
             // TODO: remove this check once it's confirmed it's not needed
