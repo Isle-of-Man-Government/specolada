@@ -55,54 +55,56 @@ export abstract class ValidationRule {
 }
 
 
-abstract class ValidationRuleCreator {
+export abstract class ValidationRuleDefinition {
     abstract ruleTitle: string;
-    abstract create: () => ValidationRule;
+    abstract createRule: () => ValidationRule;
 }
 
 
 export abstract class FieldType {
     abstract kind: FieldType_kind;
-    abstract allowedRules: ValidationRuleCreator[];
+    abstract allowedRules: ValidationRuleDefinition[];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 
 export class MinChars extends ValidationRule {
+    private static readonly apiName = "MinChars";
     private static readonly title = "minimum required";
 
     private constructor() {
         super(
-            "MinChars",
+            MinChars.apiName,
             MinChars.title,
             "The minimum number of characters required",
             new RuleParam("min", "number"),
         );
     }
     
-    static creator: ValidationRuleCreator = {
+    static definition: ValidationRuleDefinition = {
         ruleTitle: MinChars.title,
-        create: () => new MinChars(),
+        createRule: () => new MinChars(),
     };
 }
 
 
 export class MaxChars extends ValidationRule {
+    private static readonly apiName = "MaxChars";
     private static readonly title = "maximum allowed";
 
     private constructor() {
         super(
-            "MaxChars",
+            MaxChars.apiName,
             MaxChars.title,
             "The maximum number of characters allowed",
             new RuleParam("max", "number"),
         );
     }
     
-    static creator: ValidationRuleCreator = {
+    static definition: ValidationRuleDefinition = {
         ruleTitle: MaxChars.title,
-        create: () => new MaxChars(),
+        createRule: () => new MaxChars(),
     };
 }
 
@@ -110,8 +112,8 @@ export class MaxChars extends ValidationRule {
 export class FreeTextFieldType extends FieldType {
     kind: FieldType_kind = "free text";
     allowedRules = [
-        MinChars.creator,
-        MaxChars.creator,
+        MinChars.definition,
+        MaxChars.definition,
     ];
 }
 
