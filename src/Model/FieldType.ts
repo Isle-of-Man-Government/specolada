@@ -63,7 +63,6 @@ abstract class ValidationRuleCreator {
 
 export abstract class FieldType {
     abstract kind: FieldType_kind;
-    abstract validationRules: ValidationRule[];
     abstract allowedRules: ValidationRuleCreator[];
 }
 
@@ -110,7 +109,6 @@ export class MaxChars extends ValidationRule {
 
 export class FreeTextFieldType extends FieldType {
     kind: FieldType_kind = "free text";
-    validationRules: ValidationRule[] = [];
     allowedRules = [
         MinChars.creator,
         MaxChars.creator,
@@ -124,7 +122,6 @@ export class FreeTextFieldType extends FieldType {
 
 export class NumberFieldType extends FieldType {
     kind: FieldType_kind = "number";
-    validationRules: ValidationRule[] = [];
     allowedRules = [
         // TODO
     ];
