@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Input, Text, Select } from '@chakra-ui/core';
+import { Input, Text, Select, Menu, MenuButton, MenuList, MenuItem, Button, Box, Flex, InputGroup, InputLeftAddon } from '@chakra-ui/core';
 
 import { Field, FieldType } from 'Model';
-import { FreeTextFieldType, NumberFieldType, FieldType_kind } from 'Model/FieldType';
+import { FreeTextFieldType, NumberFieldType, FieldType_kind, ValidationRuleDefinition, ValidationRule } from 'Model/FieldType';
+            // TODO: import from 'Model' instead of reaching into internals
+            // TODO: import from 'Model' instead of reaching into internals
 
 
 // TODO: handle 'required'
@@ -30,11 +32,16 @@ export const Body: React.FC<BodyProps> = ({ field, onFieldChange }) => {
             value={field.type}
             onValueChange={newValue => partialFieldUpdate({ type: newValue })}
         />
+        <ValidationRulesEditor
+            rules={field.validationRules}
+            availableRules={field.type?.allowedRules ?? []}
+            onValueChange={newValue => partialFieldUpdate({ validationRules: newValue })}
+        />
         <TextDataEditor
             title="hint text"
             value={field.hintText ?? ""}
             onValueChange={newValue => partialFieldUpdate({ hintText: newValue })}
-            />
+        />
     </>);
 }
 
@@ -89,8 +96,8 @@ interface TypeDataEditorProps {
     onValueChange: (ft: FieldType) => void;
 }
 const TypeDataEditor: React.FC<TypeDataEditorProps> = ({ title, value, onValueChange }) => {
-    const [placeholder, setPlaceholder] = useState("<select field type>");
-    const removePlaceholder = () => setPlaceholder("");
+    const [placeholderOption, setPlaceholderOption] = useState("<select field type>");
+    const removePlaceholderOption = () => setPlaceholderOption("");
 
     const options: { value: FieldType_kind, description: string }[] = [
         { value: "free text", description: "Free Text" },
@@ -99,7 +106,7 @@ const TypeDataEditor: React.FC<TypeDataEditorProps> = ({ title, value, onValueCh
 
     const selectValue = (stringValue: string) => {
         // unsafe cast but all values come from the <select> which is build with 'FieldType_kind' values
-        const val = stringValue as (FieldType_kind | "");
+        const val = stringValue
 
         switch (val) {
             case "":
@@ -126,10 +133,10 @@ const TypeDataEditor: React.FC<TypeDataEditorProps> = ({ title, value, onValueCh
             borderRadius={commonProps.radius}
             width={commonProps.width}
 
-            placeholder={placeholder}
+            placeholder={placeholderOption}
             value={value?.kind || ""}
             onChange={(e) => {
-                removePlaceholder();
+                removePlaceholderOption();
                 selectValue(e.target.value)
             }}
         >
@@ -139,3 +146,105 @@ const TypeDataEditor: React.FC<TypeDataEditorProps> = ({ title, value, onValueCh
         </Select>
     </>);
 };
+
+
+interface ValidationRuleAdderProps {
+    availableRules: ValidationRuleDefinition[];
+    onRuleSelected: (rule: ValidationRule) => void;
+}
+const ValidationRuleAdder: React.FC<ValidationRuleAdderProps> = ({ availableRules, onRuleSelected }) => {
+    return (
+        <Menu>
+            {/* due to a bug in Chakra (missing TS definition?)
+                I can't use:   rightIcon="chevron-down"
+                and I use:   {...{rightIcon: "chevron-down"}}
+            */}
+            <MenuButton
+                as={Button}
+                size={commonProps.size}
+                borderRadius={commonProps.radius}
+                {...{rightIcon: "chevron-down"}}
+            >
+                Add validation rule
+            </MenuButton>
+            <MenuList>
+                {(availableRules.length === 0) &&
+                    <MenuItem as="div" width="auto" color="black" fontSize="0.8em" isDisabled>
+                        {"<none available>"}
+                    </MenuItem>
+                }
+                {availableRules.map(creator =>
+                    <MenuItem
+                        key={creator.ruleName}
+                        as="div"
+                        width="auto"
+                        color="black"
+                        onClick={() => onRuleSelected(creator.createRule())}
+                    >
+                        <Text as="div">
+                            {creator.ruleTitle}
+                        </Text>
+                    </MenuItem>
+                )}
+            </MenuList>
+        </Menu>
+    );
+};
+
+
+interface ValidationRulesEditorProps {
+    rules: ValidationRule[];
+    availableRules: ValidationRuleDefinition[];
+    onValueChange: (rule: ValidationRule[]) => void;
+}
+const ValidationRulesEditor: React.FC<ValidationRulesEditorProps> = ({ rules, availableRules, onValueChange }) => {
+    const rulesForAddMenu = availableRules.filter(x => !rules.map(y => y.name).includes(x.ruleName));
+    return (
+        <Flex flexDirection="column" alignItems="flex-start" marginLeft={6}>
+            <Label title="validation rules" />
+            <Box
+                border="white solid 1px"
+                borderRadius={commonProps.radius}
+                paddingX={3}
+                paddingTop={1}
+                paddingBottom={3}
+            >
+                <ValidationRuleAdder
+                    availableRules={rulesForAddMenu}
+                    onRuleSelected={newRule => onValueChange([...rules, newRule])}
+                />
+                {rules.length === 0 &&
+                    <Text key="<none>" as="div" fontSize="0.8em" color="grey">
+                        no rules yet
+                    </Text>
+                }
+                {rules.map(x => <ValidationRuleDisplay key={x.name} rule={x} />)}
+            </Box>
+        </Flex>
+    );
+};
+
+
+interface ValidationRuleDisplayProps {
+    rule: ValidationRule;
+}
+const ValidationRuleDisplay: React.FC<ValidationRuleDisplayProps> = ({ rule }) =>
+    <Text as="div">
+        {rule.title}
+        <Box ml={4}>
+            {rule.params.map(param =>
+                <Flex key={param.name}>
+                    <InputGroup size="sm">
+                        <InputLeftAddon children={param.title} backgroundColor="transparent" />
+                        <Input
+                            variant="outline"
+                            roundedLeft={0}
+                            placeholder={param.valType}
+                            value={param.value ?? ""}
+                            onChange={() => console.error(`rule value change not handled yet`)}
+                        />
+                    </InputGroup>
+                </Flex>
+            )}
+        </Box>
+    </Text>;
