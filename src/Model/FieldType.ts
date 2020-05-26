@@ -73,7 +73,7 @@ export abstract class FieldType {
 
 export class MinChars extends ValidationRule {
     private static readonly apiName = "freeText_MinChars";
-    private static readonly title = "minimum required";
+    private static readonly title = "min length";
 
     private constructor() {
         super(
@@ -94,7 +94,7 @@ export class MinChars extends ValidationRule {
 
 export class MaxChars extends ValidationRule {
     private static readonly apiName = "freeText_maxChars";
-    private static readonly title = "maximum allowed";
+    private static readonly title = "max length";
 
     private constructor() {
         super(

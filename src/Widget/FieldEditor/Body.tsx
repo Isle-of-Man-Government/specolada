@@ -230,7 +230,9 @@ interface ValidationRuleDisplayProps {
 }
 const ValidationRuleDisplay: React.FC<ValidationRuleDisplayProps> = ({ rule }) =>
     <Text as="div">
-        {rule.title}
+        <Text as="div" fontSize="0.8em">
+            {rule.description}
+        </Text>
         <Box ml={4}>
             {rule.params.map(param =>
                 <Flex key={param.name}>
