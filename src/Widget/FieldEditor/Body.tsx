@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { Input, Text, Select, Menu, MenuButton, MenuList, MenuItem, Button, Box, Flex, InputGroup, InputLeftAddon } from '@chakra-ui/core';
 
-import { Field, FieldType } from 'Model';
-import { FreeTextFieldType, NumberFieldType, FieldType_kind, ValidationRuleDefinition, ValidationRule } from 'Model/FieldType';
-            // TODO: import from 'Model' instead of reaching into internals
-            // TODO: import from 'Model' instead of reaching into internals
+import { Field, FieldType, ValidationRule, ValidationRuleDefinition, FreeTextFieldType, NumberFieldType } from 'Model';
 
 
 // TODO: handle 'required'
