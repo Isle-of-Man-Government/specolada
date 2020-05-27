@@ -99,29 +99,29 @@ const TypeDataEditor: React.FC<TypeDataEditorProps> = ({ title, value, onValueCh
     const [placeholderOption, setPlaceholderOption] = useState("<select field type>");
     const removePlaceholderOption = () => setPlaceholderOption("");
 
-    const options: { value: FieldType_kind, description: string }[] = [
-        { value: "free text", description: "Free Text" },
-        { value: "number", description: "Number" },
+    interface FieldTypeOption {
+        value: string;
+        description: string;
+        creator: () => FieldType;
+    }
+    const options: FieldTypeOption[] = [
+        { value: "free text", description: "Free Text", creator: () => new FreeTextFieldType() },
+        { value: "number", description: "Number", creator: () => new NumberFieldType() },
     ];
 
-    const selectValue = (stringValue: string) => {
-        // unsafe cast but all values come from the <select> which is build with 'FieldType_kind' values
-        const val = stringValue
-
-        switch (val) {
-            case "":
-                // will not happen as long as placeholder is removed after first change
-                break;
-            case "free text":
-                onValueChange(new FreeTextFieldType());
-                break;
-            case "number":
-                onValueChange(new NumberFieldType());
-                break;
-            default:
-                // should not happen if all above cases of 'FieldType_kind' are handled
-                throw new Error(`Unexpected FieldType kind: '${val}'`);
+    const selectValue = (value: string) => {
+        if (value === "") {
+            throw new Error(`No type selected. That was supposed not to be possible to do in the UI`);
         }
+
+        const matchingOptions = options.filter(x => x.value === value);
+        const creator = matchingOptions[0]?.creator;
+
+        if (creator === undefined) {
+            throw new Error(`Unexpected Field Type option selected: '${value}'`);
+        }
+
+        onValueChange(creator());
     };
 
     return (<>
