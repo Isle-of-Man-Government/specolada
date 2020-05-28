@@ -1,4 +1,5 @@
-import { FieldType, ValidationRule } from './FieldType';
+import { FieldType } from ".";
+import { ValidationRule } from ".";
 
 
 export class Field {

@@ -1,5 +1,5 @@
-import { FieldGroup } from "./FieldGroup";
-import { Field } from "./Field";
+import { FieldGroup } from ".";
+import { Field } from ".";
 
 
 export class Page {

@@ -1,12 +1,12 @@
-
 export { Field } from './Field';
 export { FieldGroup } from './FieldGroup';
 export { Page } from './Page';
-export {
-    // abstract definitions
-    FieldType, ValidationRule, ValidationRuleDefinition,
-    // implementation for 'free text' field type
-    FreeTextFieldType, MinChars, MaxChars,
-    // implementation for 'number' field type
-    NumberFieldType,
-} from './FieldType';
+export { ValidationRule, ValidationRuleDefinition } from "./ValidationRule";
+
+export { FieldType } from './FieldType';
+
+// 'free text' field type and its validation rules
+export { FreeTextFieldType, MinChars, MaxChars } from './FieldType';
+
+// 'number' field type and its validation rules
+export { NumberFieldType } from './FieldType';
