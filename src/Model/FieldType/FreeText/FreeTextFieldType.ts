@@ -1,4 +1,4 @@
-import { FieldType, FieldType_kind } from "..";
+import { FieldType, FieldType_kind } from "../FieldType";
 import { MinChars } from "./MinChars";
 import { MaxChars } from "./MaxChars";
 

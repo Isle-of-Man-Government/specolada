@@ -1,4 +1,4 @@
-import { FieldType, FieldType_kind } from "..";
+import { FieldType, FieldType_kind } from "../FieldType";
 
 
 // TODO: validation rules for Number Field Type
