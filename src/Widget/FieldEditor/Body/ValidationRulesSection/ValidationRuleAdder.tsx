@@ -3,7 +3,7 @@ import { Button, Menu, MenuButton, MenuList, MenuItem, Text } from "@chakra-ui/c
 
 import { ValidationRule, ValidationRuleDefinition } from "Model";
 
-import { ui } from "./common";
+import { ui } from "../common";
 
 
 interface Props {

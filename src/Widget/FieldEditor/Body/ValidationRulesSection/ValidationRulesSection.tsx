@@ -3,8 +3,8 @@ import { Box, Flex, Text } from "@chakra-ui/core";
 
 import { ValidationRule, ValidationRuleDefinition } from "Model";
 
-import { ui } from "./common";
-import { Label } from "./Label";
+import { ui } from "../common";
+import { Label } from "../Label";
 import { ValidationRuleAdder } from "./ValidationRuleAdder";
 import { ValidationRuleEditor } from "./ValidationRuleEditor";
 
