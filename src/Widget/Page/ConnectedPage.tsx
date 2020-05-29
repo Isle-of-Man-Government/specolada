@@ -19,9 +19,10 @@ export const ConnectedPage: React.FC<ConnectedPageProps> = ({ pageId }) => {
             onAddFieldClick={() => store.addFieldTo(pageId)}
         >
             {store.getChildrenIdsOf(pageId)
-                .map(fieldId => {  // TODO: it can be either a field of field group
-                    return { key: fieldId, child: <FieldEditor fieldId={fieldId} /> };
-                })
+                // TODO: it can be either a field of field group
+                .map(fieldId =>
+                    <FieldEditor key={fieldId} fieldId={fieldId} />
+                )
             }
         </PurePage>
     );

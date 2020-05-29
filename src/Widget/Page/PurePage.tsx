@@ -9,7 +9,6 @@ import './page.css';
 interface PurePageProps {
     page: Page;
     onAddFieldClick: () => void;
-    children: ({key: string, child: React.ReactNode})[];  // TODO: child can be either Field or FieldGroup
 }
 
 export const PurePage: React.FC<PurePageProps> = ({ page, onAddFieldClick, children }) =>
@@ -17,11 +16,7 @@ export const PurePage: React.FC<PurePageProps> = ({ page, onAddFieldClick, child
         <Text as="h1" textAlign="center" marginTop={0}>
             {page.title}
         </Text>
-        {children.map(({ key, child }) =>
-            <React.Fragment key={key}>
-                {child}
-            </React.Fragment>
-        )}
+        {children}
         <Button onClick={onAddFieldClick}>
             + Add Field
         </Button>
