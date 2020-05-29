@@ -27,9 +27,17 @@ export abstract class State {
         };
     }
 
-    abstract addField(parentId: Id): void;
+    abstract addPage(): void;
+    abstract getPage(pageId: Id): Page;
+    abstract updatePage(pageId: Id, page: Page): void;
 
-    abstract updateField(fieldId: Id, fieldValue: Field): void;
+    abstract addField(parentId: Id): void;
+    abstract getField(fieldId: Id): Field;
+    abstract updateField(fieldId: Id, field: Field): void;
+
+    abstract addValidationRule(parentId: Id, rule: ValidationRule): void;
+    abstract getValidationRule(ruleId: Id): ValidationRule;
+    abstract updateValidationRule(ruleId: Id, rule: ValidationRule): void;
 
     // TODO: remove after initial dev phase when more robust access is implemented
     abstract lastPageUsedId(): Id;
@@ -37,15 +45,6 @@ export abstract class State {
     // TODO: remove after initial dev phase when more robust access is implemented
     abstract lastPageUsed(): Page;
 
-    abstract getPage(pageId: Id): Page;
+    abstract getFieldIdsForPage(pageId: Id): Id[];
 
-    abstract getField(fieldId: Id): Field;
-
-    abstract getChildrenOf(parentId: Id): Id[];
-
-    abstract addValidationRule(parentId: Id, rule: ValidationRule): void;
-
-    abstract getValidationRule(ruleId: Id): ValidationRule;
-
-    abstract updateValidationRule(ruleId: Id, rule: ValidationRule): void;
 }

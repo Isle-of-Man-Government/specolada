@@ -28,32 +28,30 @@ export class StoreImpl extends Store {
         this.setState(newState);
     }
 
-    addFieldTo(parentId: Id): void {
-        this.produceNewState(s => s.addField(parentId));
-    }
-
-    updateField(fieldId: Id, fieldValue: Field): void {
-        this.produceNewState(s => s.updateField(fieldId, fieldValue));
-    }
-
-    lastPageUsedId(): Id {
-        return this.state.lastPageUsedId();
-    }
-
-    lastPageUsed(): Page {
-        throw new Error("Method not implemented.");
+    addPage(): void {
+        this.produceNewState(s => s.addPage());
     }
 
     getPage(pageId: Id): Page {
         return this.state.getPage(pageId);
     }
 
+    updatePage(pageId: Id, pageValue: Page): void {
+        this.produceNewState(s => s.updatePage(pageId, pageValue));
+    }
+
+    addFieldTo(parentId: Id): void {
+        this.produceNewState(s => s.addField(parentId));
+    }
+
     getField(fieldId: Id): Field {
         return this.state.getField(fieldId);
     }
 
-    getChildrenIdsOf(parentId: Id): string[] {
-        return this.state.getChildrenOf(parentId);
+    updateField(fieldId: Id, fieldValue: Field): void {
+        console.log(`Store - update field; field value: ${JSON.stringify(fieldValue, null, 2)}`);
+        
+        this.produceNewState(s => s.updateField(fieldId, fieldValue));
     }
 
     addValidationRuleTo(parentId: Id, rule: ValidationRule): void {
@@ -66,5 +64,17 @@ export class StoreImpl extends Store {
 
     updateValidationRule(ruleId: Id, rule: ValidationRule): void {
         this.produceNewState(s => s.updateValidationRule(ruleId, rule));
+    }
+
+    lastPageUsedId(): Id {
+        return this.state.lastPageUsedId();
+    }
+
+    lastPageUsed(): Page {
+        throw new Error("Method not implemented.");
+    }
+
+    getFieldIdsForPage(pageId: Id): string[] {
+        return this.state.getFieldIdsForPage(pageId);
     }
 }

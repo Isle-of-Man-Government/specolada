@@ -15,6 +15,42 @@ export class StateImpl extends State {
         return String(this.nextId++);
     }
 
+    addPage(): void {
+        const newId = this.getNextId();
+        const newPage = {
+            ...new Page("<page title>"),
+            id: newId,
+            parentId: null,
+        };
+
+        this.userData.page.set(newId, newPage);
+    }
+
+    getPage(pageId: Id): Page {
+        const maybePage = this.userData.page.get(pageId);
+        if (maybePage === undefined) {
+            throw new Error(`Page with id '${JSON.stringify(pageId)}' was not found`);
+        }
+
+        // TODO?: hydrate fields if needed (they are expected to be null when stored)
+        // but maybe we want to return empty pages because a Page Widget doesn't need to know about page's children?
+
+        return maybePage;
+    }
+
+    updatePage(pageId: Id, newPageValue: Page): void {
+        const currentValue = this.userData.page.get(pageId);
+        if (currentValue === undefined) {
+            throw new Error(`Can't update page with id '${JSON.stringify(pageId)}', it doesn't exist`);
+        }
+        
+        this.userData.page.set(pageId, {
+            ...newPageValue,
+            id: currentValue.id,
+            parentId: currentValue.parentId,
+        });
+    }
+
     addField(parentId: Id): void {
         const newId = this.getNextId();
         const newField = {
@@ -26,16 +62,65 @@ export class StateImpl extends State {
         this.userData.field.set(newId, newField);
     }
 
-    updateField(fieldId: Id, newValue: Field): void {
+    getField(fieldId: Id): Field {
+        const field = this.userData.field.get(fieldId);
+        if (field === undefined) {
+            throw new Error(`No field with id '${JSON.stringify(fieldId)}'`);
+        }
+
+        return field;
+    }
+
+    updateField(fieldId: Id, newFieldValue: Field): void {
         const currentValue = this.userData.field.get(fieldId);
         if (currentValue === undefined) {
             throw new Error(`Can't update field with id '${JSON.stringify(fieldId)}', it doesn't exist`);
         }
 
         this.userData.field.set(fieldId, {
-            ...newValue,
+            ...newFieldValue,
             id: currentValue.id,
             parentId: currentValue.parentId,
+        });
+    }
+
+    addValidationRule(parentId: Id, rule: ValidationRule): void {
+        const newId = this.getNextId();
+        const newRule = {
+            ...rule,
+            id: newId,
+            parentId,
+        };
+
+        this.userData.validationRule.set(newId, newRule);
+    }
+
+    getValidationRule(ruleId: Id): ValidationRule {
+        const rule = this.userData.validationRule.get(ruleId);
+        if (rule === undefined) {
+            throw new Error(`No rule with id '${JSON.stringify(ruleId)}'`);
+        }
+
+        return rule;
+    }
+
+    updateValidationRule(ruleId: Id, newRuleValue: ValidationRule): void {
+        const currentValue = this.userData.validationRule.get(ruleId);
+        if (currentValue === undefined) {
+            throw new Error(`Can't update rule with id '${JSON.stringify(ruleId)}', it doesn't exist`);
+        }
+
+        if (currentValue.name !== newRuleValue.name) {
+            throw new Error(`The new value for the validation rule is of a different kind`);
+            // but should we care about that?
+            // I guess not so:
+            // TODO: remove this check once it's confirmed it's not needed
+        }
+
+        this.userData.validationRule.set(ruleId, {
+            ...newRuleValue,
+            id: currentValue.id,
+            parentId: currentValue.id,
         });
     }
 
@@ -57,67 +142,10 @@ export class StateImpl extends State {
         return lastPage;
     }
 
-    getPage(pageId: Id): Page {
-        const maybePage = this.userData.page.get(pageId);
-        if (maybePage === undefined) {
-            throw new Error(`Page with id '${JSON.stringify(pageId)}' was not found`);
-        }
-
-        // TODO?: hydrate fields if needed (they are expected to be null when stored)
-        // but maybe we want to return empty pages because a Page Widget doesn't need to know about page's children?
-
-        return maybePage;
-    }
-
-    getField(fieldId: Id): Field {
-        const field = this.userData.field.get(fieldId);
-
-        if (field === undefined) {
-            throw new Error(`No field with id '${JSON.stringify(fieldId)}'`);
-        }
-
-        return field;
-    }
-
-    getChildrenOf(parentId: Id): Id[] {
+    getFieldIdsForPage(pageId: Id): Id[] {
         return Array.from(this.userData.field.values())
-            .filter(x => x.parentId === parentId)
+            .filter(x => x.parentId === pageId)
             .map(x => x.id);
-    }
-
-    addValidationRule(parentId: Id, rule: ValidationRule): void {
-        const id = this.getNextId();
-
-        this.userData.validationRule.set(id, { ...rule, id, parentId });
-    }
-
-    getValidationRule(ruleId: Id): ValidationRule {
-        const rule = this.userData.validationRule.get(ruleId);
-        if (rule === undefined) {
-            throw new Error(`No rule with id '${JSON.stringify(ruleId)}'`);
-        }
-
-        return rule;
-    }
-
-    updateValidationRule(ruleId: Id, newValue: ValidationRule): void {
-        const currentValue = this.userData.validationRule.get(ruleId);
-        if (currentValue === undefined) {
-            throw new Error(`Can't update rule with id '${JSON.stringify(ruleId)}', it doesn't exist`);
-        }
-
-        if (currentValue.name !== newValue.name) {
-            throw new Error(`The new value for the validation rule is of a different kind`);
-            // but should we care about that?
-            // I guess not so:
-            // TODO: remove this check once it's confirmed it's not needed
-        }
-
-        this.userData.validationRule.set(ruleId, {
-            ...newValue,
-            id: currentValue.id,
-            parentId: currentValue.id,
-        });
     }
     
     // TODO: remove when test data not needed anymore
