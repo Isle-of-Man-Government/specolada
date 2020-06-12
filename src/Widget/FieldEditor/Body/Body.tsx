@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Field } from 'Model';
+import { TreeNode } from 'Store';
 
 import { TextEditor } from './TextEditor';
 import { TypeEditor } from './TypeEditor';
@@ -13,8 +14,8 @@ import { ValidationRulesSection } from './ValidationRulesSection';
 
 
 interface Props {
-    field: Field;
-    onFieldChange: (newField: Field) => void;
+    field: Field & TreeNode;
+    onFieldChange: (newField: Field & TreeNode) => void;
 }
 
 export const Body: React.FC<Props> = ({ field, onFieldChange }) => {
@@ -33,9 +34,10 @@ export const Body: React.FC<Props> = ({ field, onFieldChange }) => {
             onValueChange={newValue => partialFieldUpdate({ type: newValue })}
         />
         <ValidationRulesSection
-            rules={field.validationRules}
-            availableRules={field.type?.allowedRules ?? []}
-            onValueChange={newValue => partialFieldUpdate({ validationRules: newValue })}
+            field={field}
+            // rules={field.validationRules}
+            // availableRules={field.type?.allowedRules ?? []}
+            // onValueChange={newValue => partialFieldUpdate({ validationRules: newValue })}
         />
         <TextEditor
             title="hint text"

@@ -1,10 +1,21 @@
-import { produce } from 'immer';
+import { produce, isDraft } from 'immer';
 
 import { Page, Field, ValidationRule } from 'Model';
 
 import { Store } from './Store';
 import { State } from './State';
 import { Id } from './TreeNode';
+
+
+const LOG = (text: string, obj: any) => console.log(
+    `~${module.id.replace("./src/", "")}~ || ${text} ::>  ${JSON.stringify(obj, null, 2)}`);
+
+const LOG_MAP = (text: string, m: Map<any, any>) => (() => {
+    const acc: any[] = [];
+    m.forEach(v => acc.push(v));
+    LOG(text, acc);
+})();
+
 
 /**
  * Ensures immutability of the state.
@@ -23,8 +34,18 @@ export class StoreImpl extends Store {
 
     private produceNewState(mutator: (s: State) => void) {
         // use Immer to modify state easily while preserving immutability
-        const newState = produce(this.state, mutator);
+        const newState = produce(this.state, state => {
+            console.log(`Store - producing new state: isDraft: ${isDraft(state)}`);
+            
+            mutator(state);
+        });
 
+        console.log(`NEW STATE: ${JSON.stringify(newState, null, 2)}`);
+
+        LOG_MAP("PAGE: ", newState.userData.page);
+        LOG_MAP("FIELD: ", newState.userData.field);
+        LOG_MAP("RULES: ", newState.userData.validationRule);
+        
         this.setState(newState);
     }
 
